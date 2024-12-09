@@ -1,29 +1,31 @@
 import SwiftUI
-import RealmSwift
-
-let realApp = RealmSwift.App(id: "recipeapp-ilvlq")
 
 @main
-struct RecipeApp: SwiftUI.App {
-    @StateObject var userAuth = UserAuth.shared
-    
-    init() {
-        Task.init {
-            do {
-                // Configuración de la Realm
-                let configuration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
-
-                // Abriendo la Realm de forma asíncrona
-                _ = try await Realm(configuration: configuration)
-            } catch {
-                print("Error opening Realm: \(error.localizedDescription)")
-            }
-        }
-    }
+struct RecipeApp: App {
+    @StateObject private var realmManager = RealmManager.shared
     
     var body: some Scene {
         WindowGroup {
-            ContentView(userLogged: .constant(nil)).environmentObject(userAuth)
+            Group {
+                if let user = realmManager.user, realmManager.realm != nil {
+                    ContentView()
+                        .environment(\.realmConfiguration, realmManager.configuration!)
+                        .environment(\.realm, realmManager.realm!)
+                } else {
+                    LoginView()
+                        .environmentObject(realmManager)
+                }
+            }
+            .task {
+                if let user = realmManager.app.currentUser {
+                    realmManager.user = user
+                    do {
+                        try await realmManager.initialize()
+                    } catch {
+                        print("Failed to initialize Realm: \(error)")
+                    }
+                }
+            }
         }
     }
 }

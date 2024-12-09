@@ -2,23 +2,19 @@ import SwiftUI
 import RealmSwift
 
 struct ContentView: View {
-    @State private var username = ""
-    @Binding var userLogged: User?
-    @EnvironmentObject var userAuth: UserAuth
+    
+    @State private var recipeName = ""
+    @ObservedResults(Recipe.self) var recipes: Results<Recipe>
     
     var body: some View {
         NavigationView {
-            if userAuth.userLogged == nil {
-                LoginView()
-            } else {
-                HomeView(recipes: Recipes())
-            }
+            HomeView()
         }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(userLogged: .constant(nil))
+        ContentView()
     }
 }

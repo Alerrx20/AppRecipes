@@ -2,14 +2,16 @@ import SwiftUI
 import RealmSwift
 
 struct RecipeCard: View {
+    
     var recipe: Recipe
-
+    
     var body: some View {
         VStack {
             if let uiImage = UIImage(data: recipe.image) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
+                    .frame(maxWidth: .infinity, maxHeight: 217)
                     .overlay(alignment: .bottom) {
                         Text(recipe.name)
                             .font(.headline)
@@ -39,13 +41,5 @@ struct RecipeCard: View {
         .background(LinearGradient(gradient: Gradient(colors: [Color(.gray).opacity(0.3), Color(.gray)]), startPoint: .top, endPoint: .bottom))
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .shadow(color: Color.black.opacity(0.3), radius: 15, x: 0, y: 10)
-    }
-}
-
-struct RecipeCard_Previews: PreviewProvider {
-    static var previews: some View {
-        let imageData = UIImage(named: "Image")!.jpegData(compressionQuality: 1.0)!
-
-        RecipeCard(recipe: Recipe(name: "Recipe 1", instructions: "Instructions 1", ingredients: ["Ingredient 1", "Ingredient 2"], owner_id: ObjectId(), image: imageData))
     }
 }

@@ -2,25 +2,48 @@ import SwiftUI
 import RealmSwift
 
 struct HomeView: View {
-    @ObservedRealmObject var recipes: Recipes
+    
+    @StateObject private var realmManager = RealmManager.shared
     
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(recipes.recipes) { recipe in
-                    Text("\(recipe.name)")
+        TabView {
+            NavigationView {
+                ScrollView {
+                    RecipeList()
+                }
+                .navigationTitle("My Recipes")
+                .navigationBarItems(trailing: EditButton())
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("Log out") {
+                            Task {
+                                print("logout")
+                                do {
+                                    try await realmManager.logout()
+                                } catch {
+                                    let errorMessage = error.localizedDescription
+                                    print(errorMessage)
+                                }
+                            }
+                        }
+                    }
                 }
             }
+            .navigationViewStyle(.stack)
+            .tabItem {
+                Label("Home", systemImage: "house")
+            }
+            
+            CreateRecipeView()
+                .tabItem {
+                   Label("Create", systemImage: "plus")
+                }
         }
-        .navigationViewStyle(.stack)
-        
     }
 }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        let realm = realmWithData()
-        return HomeView(recipes:realm.objects(Recipes.self).first!)
-        .environment(\.realm, realm)
+        return HomeView()
     }
 }

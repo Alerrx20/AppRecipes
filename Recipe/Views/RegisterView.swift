@@ -80,24 +80,24 @@ struct RegisterView: View {
     }
     
     private func register() async {
-        guard isEmailValid else {
-            alertMessage = "Ingrese un email válido"
-            showAlert = true
-            return
-        }
-        do {
-            let email = self.email
-            let password = self.password
-            print("Email: " ,email, "Contra:", password)
-            try await realApp.emailPasswordAuth.registerUser(email: email, password: password)
-            print("Successfully registered user.")
-            showAlert = true
-            alertMessage = "success"
-        } catch {
-            showAlert = true
-            alertMessage = error.localizedDescription;
-            print("Failed to register: \(error.localizedDescription)")
-        }
+//        guard isEmailValid else {
+//            alertMessage = "Ingrese un email válido"
+//            showAlert = true
+//            return
+//        }
+//        do {
+//            let email = self.email
+//            let password = self.password
+//            print("Email: " ,email, "Contra:", password)
+//            try await app.emailPasswordAuth.registerUser(email: email, password: password)
+//            print("Successfully registered user.")
+//            showAlert = true
+//            alertMessage = "success"
+//        } catch {
+//            showAlert = true
+//            alertMessage = error.localizedDescription;
+//            print("Failed to register: \(error.localizedDescription)")
+//        }
     }
     
     private func isValidEmail(email: String) -> Bool {
